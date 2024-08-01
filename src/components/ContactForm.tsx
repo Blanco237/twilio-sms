@@ -1,27 +1,32 @@
 "use client";
 
 import { useState } from "react";
-import { Form, Input, Button, message, Table, Popconfirm } from "antd"; // Import Ant Design components
+import { Form, Input, Button, message } from "antd"; // Import Ant Design components
+import { addContact } from "@/utils/actions";
+import { useRouter } from "next/navigation";
+import ContactList from "./ContactList";
 
 const ContactForm = () => {
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [trigger, setTrigger] = useState(false);
+  const router = useRouter();
+  
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    // Replace with your actual contact saving logic
-    await fetch("/api/contacts", {
-      method: "POST",
-      body: JSON.stringify({ name, phoneNumber }),
-    });
-    // Handle success or error
+  const handleSubmit = async () => {
+    setLoading(true);
+    await addContact({ name, phone: phoneNumber, id: crypto.randomUUID() })
     message.success("Contact added successfully!");
     setName("");
     setPhoneNumber("");
+    setLoading(false);
+    setTrigger(trig => !trig)
   };
 
   return (
-    <div className="flex flex-col px-4 pt-20 items-center justify-center min-h-[50vh] bg-gray-100">
+    <>
+      <div className="flex flex-col px-4 pt-20 items-center justify-center min-h-[50vh] bg-gray-100">
       <h2 className="text-2xl font-bold mb-4">Add Contact</h2>
       <Form
         name="basic"
@@ -62,12 +67,14 @@ const ContactForm = () => {
         </Form.Item>
 
         <Form.Item className="w-full justify-center flex">
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" loading={loading}>
             Add Contact
           </Button>
         </Form.Item>
       </Form>
     </div>
+    <ContactList trigger={trigger} setTrigger={setTrigger} />
+    </>
   );
 };
 

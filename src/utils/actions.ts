@@ -31,3 +31,24 @@ export const fetchContacts = async (): Promise<Contact[]> => {
             });
     });
 };
+
+export const addContact = async (contact: Contact): Promise<boolean> => {
+    const csvStringifier = createObjectCsvStringifier({ header: ['id', 'name', 'phone', ] });
+    const csvString = csvStringifier.stringifyRecords([contact]);
+
+    fs.appendFileSync(CSV_FILE_PATH, '\n');
+    fs.appendFileSync(CSV_FILE_PATH, csvString);
+
+    return Promise.resolve(true);
+};
+
+export const deleteContact = async (id: string): Promise<void> => {
+    const contacts = await fetchContacts();
+    const filteredContacts = contacts.filter((contact) => contact.id !== id);
+
+    const csvStringifier = createObjectCsvStringifier({ header: [ 'id', 'name', 'phone'] });
+    const csvString = csvStringifier.stringifyRecords(filteredContacts);
+
+    fs.writeFileSync(CSV_FILE_PATH, `id,name,phone\n`);
+    fs.appendFileSync(CSV_FILE_PATH, csvString);
+};

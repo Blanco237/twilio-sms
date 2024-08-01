@@ -1,11 +1,11 @@
 'use client';
 
 import { Contact } from '@/types';
-import { fetchContacts } from '@/utils/actions';
+import { deleteContact, fetchContacts } from '@/utils/actions';
 import { Button, Popconfirm, Table } from 'antd';
 import { useState, useEffect } from 'react';
 
-const ContactList = () => {
+const ContactList = ({ trigger, setTrigger }: {trigger: boolean, setTrigger: React.Dispatch<React.SetStateAction<boolean>>}) => {
   const [contacts, setContacts] = useState<Array<Contact>>([]);
   const [loading, setLoading] = useState(true);
 
@@ -18,13 +18,11 @@ const ContactList = () => {
     }
 
     load();
-  }, []);
+  }, [trigger]);
 
   const handleDelete = async (id: string) => {
-    await fetch(`/api/contacts/${id}`, {
-      method: 'DELETE',
-    });
-    setContacts(contacts.filter((contact) => contact.id !== id));
+    await deleteContact(id);
+    setTrigger(trig => !trig)
   };
 
   const columns = [
