@@ -8,4 +8,6 @@ export interface Message {
     id: string;
     receiver: string;
     body: string
+    date: string
+    time: string
 }

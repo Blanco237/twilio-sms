@@ -6,9 +6,10 @@ import { createObjectCsvStringifier } from 'csv-writer';
 import path from 'path';
 
 import appConstants from "./contants";
-import { Contact } from '@/types';
+import { Contact, Message } from '@/types';
 
 const CSV_FILE_PATH = path.join(process.cwd(), 'src', 'data', 'contacts.csv');
+const MSG_FILE_PATH = path.join(process.cwd(), 'src', 'data', 'messages.csv');
 
 export const verifyLogin = async (code: string) => {
     return code === appConstants.AUTH_CODE;
@@ -51,4 +52,23 @@ export const deleteContact = async (id: string): Promise<void> => {
 
     fs.writeFileSync(CSV_FILE_PATH, `id,name,phone\n`);
     fs.appendFileSync(CSV_FILE_PATH, csvString);
+};
+
+
+export const fetchMessages = async (): Promise<Message[]> => {
+    const messages: Message[] = [];
+
+    return new Promise((resolve, reject) => {
+        fs.createReadStream(MSG_FILE_PATH)
+            .pipe(csvParser())
+            .on('data', (data) => {
+                messages.push(data as Message);
+            })
+            .on('end', () => {
+                resolve(messages);
+            })
+            .on('error', (error) => {
+                reject(error);
+            });
+    });
 };

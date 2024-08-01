@@ -24,9 +24,7 @@ const SmsForm = () => {
 
   useEffect(() => {
     const load = async () => {
-      console.log('Loading Contacts')
       const conts = await fetchContacts();
-      console.log('Contacts ', conts)
       setContacts(conts)
       setContactsLoading(false)
     }
