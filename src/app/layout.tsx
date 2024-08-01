@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AntdRegistry } from '@ant-design/nextjs-registry';
+import Link from 'next/link'; // Import Link component for navigation
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +19,27 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AntdRegistry>{children}</AntdRegistry>
+        <header className="bg-gray-800 text-white py-4 px-6 fixed top-0 left-0 w-full z-20">
+          <div className="container mx-auto flex justify-between items-center flex-col md:flex-row gap-2">
+            <h1 className="text-2xl font-bold">SMS App</h1>
+            <nav>
+              <ul className="flex space-x-6">
+                <li>
+                  <Link href="/sms">Send SMS</Link>
+                </li>
+                <li>
+                  <Link href="/contacts">Contacts</Link>
+                </li>
+                <li>
+                  <Link href="/sent-messages">Sent Messages</Link>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </header>
+        <main className="container mx-auto">
+          <AntdRegistry>{children}</AntdRegistry>
+        </main>
       </body>
     </html>
   );

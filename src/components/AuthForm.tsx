@@ -33,7 +33,9 @@ const AuthForm = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-4">
+      <h2 className="text-2xl font-bold mb-4">Login</h2>
+
       <Form
         name="basic"
         initialValues={{ remember: true }}
@@ -49,6 +51,7 @@ const AuthForm = () => {
         >
           <Input
             type="text"
+            size='large'
             value={loginCode}
             onChange={(e) => setLoginCode(e.target.value)}
             placeholder="Enter Login Code"
