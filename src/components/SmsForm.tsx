@@ -1,7 +1,11 @@
 'use client';
 
+import { Contact } from "@/types";
+import { fetchContacts } from "@/utils/actions";
+import authBlocker from "@/utils/authBlocker";
 import { Select, Form, Input, Button, message } from "antd";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 // import { sendSMS } from '@/utils/actions';
 
 const { Option } = Select;
@@ -10,6 +14,25 @@ const SmsForm = () => {
   const [selectedContact, setSelectedContact] = useState("");
   const [messageContent, setMessageContent] = useState("");
   const [loading, setLoading] = useState(false);
+  const [contacts, setContacts] = useState<Array<Contact>>([]);
+  const [contactsLoading, setContactsLoading] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    authBlocker(router);
+  }, [])
+
+  useEffect(() => {
+    const load = async () => {
+      console.log('Loading Contacts')
+      const conts = await fetchContacts();
+      console.log('Contacts ', conts)
+      setContacts(conts)
+      setContactsLoading(false)
+    }
+
+    load();
+  }, [])
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -28,7 +51,8 @@ const SmsForm = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex flex-col px-4 pt-20 items-center justify-center min-h-screen bg-gray-100">
+      <h2 className="text-2xl font-bold mb-4">Send SMS</h2>
       <Form
         name="basic"
         initialValues={{ remember: true }}
@@ -44,14 +68,22 @@ const SmsForm = () => {
           
         >
           <Select
+            size="large"
             value={selectedContact}
             onChange={setSelectedContact}
             placeholder="Select Contact"
             showSearch
+            loading={contactsLoading}
+            filterOption={(search, option) => {
+               // @ts-ignore
+              return (option?.children as string).toLowerCase().includes(search.toLowerCase())
+            }}
           >
-            {/* Populate with your contact data */}
-            <Option value="+1234567890">John Doe</Option>
-            {/* ... more options */}
+            {
+              contacts.map((contact) => {
+                return <Option key={contact.id} value={contact.phone}>{contact.name}</Option>
+              })
+            }
           </Select>
         </Form.Item>
 
@@ -62,6 +94,8 @@ const SmsForm = () => {
           rules={[{ required: true, message: 'Please enter a message!' }]}
         >
           <Input.TextArea
+            style={{minHeight: '150px'}}
+            size="large"
             value={messageContent}
             onChange={(e) => setMessageContent(e.target.value)}
             placeholder="Enter Message"
