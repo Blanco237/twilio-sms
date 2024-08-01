@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Form, Input, Button, message } from "antd"; // Import Ant Design components
 import { addContact } from "@/utils/actions";
 import { useRouter } from "next/navigation";
 import ContactList from "./ContactList";
+import authBlocker from "@/utils/authBlocker";
 
 const ContactForm = () => {
   const [name, setName] = useState("");
@@ -12,6 +13,11 @@ const ContactForm = () => {
   const [loading, setLoading] = useState(false);
   const [trigger, setTrigger] = useState(false);
   const router = useRouter();
+
+
+  useEffect(() => {
+    authBlocker(router);
+  }, [])
   
 
   const handleSubmit = async () => {

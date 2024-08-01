@@ -4,12 +4,20 @@ import { useState, useEffect } from 'react';
 import { Table, Modal, Button, message } from 'antd';
 import { Message } from '@/types';
 import { fetchMessages } from '@/utils/actions';
+import { useRouter } from 'next/navigation';
+import authBlocker from '@/utils/authBlocker';
 
 const SentMessages = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const router = useRouter();
+
+
+  useEffect(() => {
+    authBlocker(router);
+  }, [])
 
   useEffect(() => {
     const fetchMessagesData = async () => {
