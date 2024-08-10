@@ -1,22 +1,19 @@
 "use server";
 
 import fs from "fs";
-import csvParser from "csv-parser";
-import { createObjectCsvStringifier } from "csv-writer";
-import path from "path";
-
-import appConstants from "./contants";
 import { Contact, Message, service } from "@/types";
 import TwilioManager from "./twilio";
+import appConstants from "./contants";
+import path from "path";
 
-let CSV_FILE_PATH;
-let MSG_FILE_PATH;
+let CONTACTS_FILE_PATH;
+let MESSAGES_FILE_PATH;
 if (process.env.NODE_ENV === "development") {
-  CSV_FILE_PATH = path.join(process.cwd(), "public", "data", "contacts.csv");
-  MSG_FILE_PATH = path.join(process.cwd(), "public", "data", "messages.csv");
+  CONTACTS_FILE_PATH = path.join(process.cwd(), "public", "data", "contacts.json");
+  MESSAGES_FILE_PATH = path.join(process.cwd(), "public", "data", "messages.json");
 } else {
-  CSV_FILE_PATH = path.join(process.cwd(), "data", "contacts.csv");
-  MSG_FILE_PATH = path.join(process.cwd(), "data", "messages.csv");
+  CONTACTS_FILE_PATH = path.join(process.cwd(), "data", "contacts.json");
+  MESSAGES_FILE_PATH = path.join(process.cwd(), "data", "messages.json");
 }
 
 export const verifyLogin = async (code: string) => {
@@ -24,67 +21,45 @@ export const verifyLogin = async (code: string) => {
 };
 
 export const fetchContacts = async (): Promise<Contact[]> => {
-  const contacts: Contact[] = [];
-
-  // Log the entire file structure from 'process.cwd()'
-  console.log("File Structure:", fs.readdirSync(process.cwd(), { withFileTypes: true }));
-
-  return new Promise((resolve, reject) => {
-    fs.createReadStream(CSV_FILE_PATH)
-      .pipe(csvParser())
-      .on("data", (data) => {
-        contacts.push(data as Contact);
-      })
-      .on("end", () => {
-        resolve(contacts);
-      })
-      .on("error", (error) => {
-        reject(error);
-      });
-  });
+  try {
+    const data = fs.readFileSync(CONTACTS_FILE_PATH, "utf-8");
+    return JSON.parse(data);
+  } catch (error) {
+    console.error("Error reading contacts file:", error);
+    return [];
+  }
 };
 
 export const addContact = async (contact: Contact): Promise<boolean> => {
-  const csvStringifier = createObjectCsvStringifier({
-    header: ["id", "name", "phone"],
-  });
-  const csvString = csvStringifier.stringifyRecords([contact]);
-
-  fs.appendFileSync(CSV_FILE_PATH, "\n");
-  fs.appendFileSync(CSV_FILE_PATH, csvString);
-
-  return Promise.resolve(true);
+  try {
+    const contacts = await fetchContacts();
+    contacts.push(contact);
+    fs.writeFileSync(CONTACTS_FILE_PATH, JSON.stringify(contacts, null, 2));
+    return true;
+  } catch (error) {
+    console.error("Error adding contact:", error);
+    return false;
+  }
 };
 
 export const deleteContact = async (id: string): Promise<void> => {
-  const contacts = await fetchContacts();
-  const filteredContacts = contacts.filter((contact) => contact.id !== id);
-
-  const csvStringifier = createObjectCsvStringifier({
-    header: ["id", "name", "phone"],
-  });
-  const csvString = csvStringifier.stringifyRecords(filteredContacts);
-
-  fs.writeFileSync(CSV_FILE_PATH, `id,name,phone\n`);
-  fs.appendFileSync(CSV_FILE_PATH, csvString);
+  try {
+    const contacts = await fetchContacts();
+    const filteredContacts = contacts.filter((contact) => contact.id !== id);
+    fs.writeFileSync(CONTACTS_FILE_PATH, JSON.stringify(filteredContacts, null, 2));
+  } catch (error) {
+    console.error("Error deleting contact:", error);
+  }
 };
 
 export const fetchMessages = async (): Promise<Message[]> => {
-  const messages: Message[] = [];
-
-  return new Promise((resolve, reject) => {
-    fs.createReadStream(MSG_FILE_PATH)
-      .pipe(csvParser())
-      .on("data", (data) => {
-        messages.push(data as Message);
-      })
-      .on("end", () => {
-        resolve(messages.reverse());
-      })
-      .on("error", (error) => {
-        reject(error);
-      });
-  });
+  try {
+    const data = fs.readFileSync(MESSAGES_FILE_PATH, "utf-8");
+    return JSON.parse(data);
+  } catch (error) {
+    console.error("Error reading messages file:", error);
+    return [];
+  }
 };
 
 export const sendMessage = async (
