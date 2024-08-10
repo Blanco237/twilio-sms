@@ -84,8 +84,6 @@ const SmsForm = () => {
     }
   };
 
-  console.log(formRef.current);
-
   return (
     <div className="flex flex-col px-4 pt-20 items-center justify-center min-h-screen bg-gray-100">
       <h2 className="text-2xl font-bold mb-4">Send SMS</h2>
@@ -117,7 +115,7 @@ const SmsForm = () => {
                 .includes(search.toLowerCase());
             }}
           >
-            {contacts.map((contact) => {
+            {contacts?.map((contact) => {
               return (
                 <Option key={contact.id} value={contact.id}>
                   {contact.name}

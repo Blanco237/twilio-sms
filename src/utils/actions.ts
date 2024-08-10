@@ -9,8 +9,15 @@ import appConstants from "./contants";
 import { Contact, Message, service } from "@/types";
 import TwilioManager from "./twilio";
 
-const CSV_FILE_PATH = path.join(process.cwd(), "src", "data", "contacts.csv");
-const MSG_FILE_PATH = path.join(process.cwd(), "src", "data", "messages.csv");
+let CSV_FILE_PATH;
+let MSG_FILE_PATH;
+if(process.env.NODE_ENV === 'development'){
+  CSV_FILE_PATH = path.join(process.cwd(), "src", "data", "contacts.csv");
+  MSG_FILE_PATH = path.join(process.cwd(), "src", "data", "messages.csv");
+}else{
+  CSV_FILE_PATH = path.join(process.cwd(), "data", "contacts.csv");
+  MSG_FILE_PATH = path.join(process.cwd(), "data", "messages.csv");
+}
 
 export const verifyLogin = async (code: string) => {
   return code === appConstants.AUTH_CODE;
