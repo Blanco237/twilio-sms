@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Table, Modal, Button, message } from 'antd';
-import { Message } from '@/types';
-import { fetchMessages } from '@/utils/actions';
-import { useRouter } from 'next/navigation';
-import authBlocker from '@/utils/authBlocker';
+import { useState, useEffect } from "react";
+import { Table, Modal, Button, message } from "antd";
+import { Message } from "@/types";
+import { fetchMessages } from "@/utils/actions";
+import { useRouter } from "next/navigation";
+import authBlocker from "@/utils/authBlocker";
 
 const SentMessages = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -14,10 +14,9 @@ const SentMessages = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
 
-
   useEffect(() => {
     authBlocker(router);
-  }, [])
+  }, [router]);
 
   useEffect(() => {
     const fetchMessagesData = async () => {
@@ -26,8 +25,8 @@ const SentMessages = () => {
         const fetchedMessages = await fetchMessages();
         setMessages(fetchedMessages);
       } catch (error) {
-        console.error('Error fetching messages:', error);
-        message.error('Failed to load messages');
+        console.error("Error fetching messages:", error);
+        message.error("Failed to load messages");
       }
       setLoading(false);
     };
@@ -46,19 +45,19 @@ const SentMessages = () => {
 
   const columns = [
     {
-      title: 'Receiver',
-      dataIndex: 'receiver',
-      key: 'receiver',
+      title: "Receiver",
+      dataIndex: "receiver",
+      key: "receiver",
     },
     {
-      title: 'Date',
-      dataIndex: 'date',
-      key: 'date',
+      title: "Date",
+      dataIndex: "date",
+      key: "date",
     },
     {
-      title: 'Time',
-      dataIndex: 'time',
-      key: 'time',
+      title: "Time",
+      dataIndex: "time",
+      key: "time",
     },
   ];
 
@@ -69,7 +68,7 @@ const SentMessages = () => {
         columns={columns}
         dataSource={messages}
         pagination={false}
-        style={{width: '100%'}}
+        style={{ width: "100%" }}
         rowKey="id"
         onRow={(record) => ({
           onClick: () => handleRowClick(record),
@@ -89,10 +88,21 @@ const SentMessages = () => {
       >
         {selectedMessage && (
           <div>
-            <p><strong>Receiver:</strong> {selectedMessage.receiver}</p>
-            <p><strong>Date:</strong> {selectedMessage.date}</p>
-            <p><strong>Time:</strong> {selectedMessage.time}</p>
-            <p><strong>Body:</strong> {selectedMessage.body}</p>
+            <p>
+              <strong>Receiver:</strong> {selectedMessage.receiver}
+            </p>
+            <p>
+              <strong>Service:</strong> {selectedMessage.service}
+            </p>
+            <p>
+              <strong>Date:</strong> {selectedMessage.date}
+            </p>
+            <p>
+              <strong>Time:</strong> {selectedMessage.time}
+            </p>
+            <p>
+              <strong>Body:</strong> {selectedMessage.body}
+            </p>
           </div>
         )}
       </Modal>

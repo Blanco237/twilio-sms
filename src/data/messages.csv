@@ -1,2 +1,13 @@
-id,receiver,date,time,body
-djkdakjda,Daniel Nji,01/29/2022,11:23AM,"Hello Danny,Hope you're doing well. Hmmm, hope I,can have,indents,in,this,thing,oh"
+id,service,receiver,date,time,body
+djkdakjda,FEDEX,Daniel Nji,01/29/2022,11:23AM,"Hello Danny,Hope you're doing well. Hmmm, hope I,can have,indents,in,this,thing,oh"
+SMacfe7164c052e65dc7a2a33fa839b9d8,USPS,Atem Randy,"""Your package is on it's way""",2024-08-10,16:40:20.000
+
+SMd6c8f66650bdb97e98a8d4bee4c7c514,DHL,Atem Randy,"""On it's way bud, sit tight""",2024-08-10,16:45:56.000
+
+SMac2822444663b61ca8dbfe1555a0d43d,ROYAL,Atem Randy,2024-08-10,17:00,"""Royalty, always"""
+
+SM8485d1de2916c71a3323dd9016f6d704,DHL,Atem Randy,2024-08-10,17:05,"""Not available for me huh"""
+
+SMbfdaf8b944116425460c1b099e446056,MAERS,Atem Randy,2024-08-10,17:06,"""So, alex mayers huh"""
+
+SMc178b90f907c71618a98a43406fe026d,FEDEX,Atem Randy,2024-08-10,17:07,"""And the last one"""

@@ -1,33 +1,33 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { Input, Button, Form, message } from 'antd'; // Import Ant Design components
-import { verifyLogin } from '@/utils/actions';
-import appConstants from '@/utils/contants';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Input, Button, Form, message } from "antd"; // Import Ant Design components
+import { verifyLogin } from "@/utils/actions";
+import appConstants from "@/utils/contants";
 
 const AuthForm = () => {
-  const [loginCode, setLoginCode] = useState('');
+  const [loginCode, setLoginCode] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    const authenticated = localStorage.getItem('authenticated');
+    const authenticated = localStorage.getItem("authenticated");
     if (authenticated) {
-      router.push('/sms'); // Redirect to SMS page
+      router.push("/sms"); // Redirect to SMS page
     }
   }, []);
 
   const handleSubmit = async () => {
     setLoading(true);
-    const isValid = await verifyLogin(loginCode)
+    const isValid = await verifyLogin(loginCode);
 
     if (isValid) {
-      localStorage.setItem(appConstants.STORAGE_KEYS.AUTH, loginCode); 
-      router.push('/sms'); 
+      localStorage.setItem(appConstants.STORAGE_KEYS.AUTH, loginCode);
+      router.push("/sms");
     } else {
       // Show antd nofitcation message
-      message.error('Invalid login code');
+      message.error("Invalid login code");
     }
     setLoading(false);
   };
@@ -47,18 +47,18 @@ const AuthForm = () => {
         <Form.Item
           label="Login Code"
           name="loginCode"
-          rules={[{ required: true, message: 'Please input your login code!' }]}
+          rules={[{ required: true, message: "Please input your login code!" }]}
         >
           <Input
             type="text"
-            size='large'
+            size="large"
             value={loginCode}
             onChange={(e) => setLoginCode(e.target.value)}
             placeholder="Enter Login Code"
           />
         </Form.Item>
 
-        <Form.Item className='w-full justify-center flex'>
+        <Form.Item className="w-full justify-center flex">
           <Button type="primary" htmlType="submit">
             Login
           </Button>

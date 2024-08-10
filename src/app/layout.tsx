@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { AntdRegistry } from '@ant-design/nextjs-registry';
-import Link from 'next/link'; // Import Link component for navigation
+import { AntdRegistry } from "@ant-design/nextjs-registry";
+import Link from "next/link"; // Import Link component for navigation
 
 const inter = Inter({ subsets: ["latin"] });
 
