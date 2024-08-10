@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Form, Input, Button, message } from "antd"; // Import Ant Design components
 import { addContact } from "@/utils/actions";
 import { useRouter } from "next/navigation";
@@ -13,6 +13,7 @@ const ContactForm = () => {
   const [loading, setLoading] = useState(false);
   const [trigger, setTrigger] = useState(false);
   const router = useRouter();
+  const formRef = useRef<any>();
 
   useEffect(() => {
     authBlocker(router);
@@ -26,6 +27,7 @@ const ContactForm = () => {
     setPhoneNumber("");
     setLoading(false);
     setTrigger((trig) => !trig);
+    formRef.current?.resetFields();
   };
 
   return (
@@ -33,6 +35,7 @@ const ContactForm = () => {
       <div className="flex flex-col px-4 pt-20 items-center justify-center min-h-[50vh] bg-gray-100">
         <h2 className="text-2xl font-bold mb-4">Add Contact</h2>
         <Form
+          ref={formRef}
           name="basic"
           initialValues={{ remember: true }}
           onFinish={handleSubmit}
@@ -62,7 +65,7 @@ const ContactForm = () => {
             ]}
           >
             <Input
-              type="text"
+              type="tel"
               size="large"
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}

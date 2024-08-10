@@ -2,11 +2,7 @@ import { service } from "@/types";
 import appConstants from "./contants";
 import twilio, { Twilio } from "twilio";
 import { Message } from "@/types";
-import fs from "fs";
-import { createObjectCsvStringifier } from "csv-writer";
-import path from "path";
-
-const MSG_FILE_PATH = path.join(process.cwd(), "src", "data", "messages.csv");
+import { messages } from "@/data/messages";
 
 class TwilioManager {
   client: Twilio;
@@ -26,13 +22,6 @@ class TwilioManager {
     this.client = client;
   }
 
-  private cleanString(input: string) {
-    const cleanedString = input.replace(/"/g, "").replace(/\n/g, " ");
-    const wrappedString = `"${cleanedString}"`;
-
-    return wrappedString;
-  }
-
   async sendMessage(
     phone: string,
     name: string,
@@ -44,18 +33,19 @@ class TwilioManager {
       messagingServiceSid: this.services[service],
       to: phone,
     });
+
     // console.log(message);
-    this.addMessageToCSV({
+    this.addMessage({
       id: message.sid,
       service: service.toUpperCase(),
       receiver: name,
-      body: this.cleanString(message.body),
+      body: message.body,
       dateCreated: message.dateCreated,
     });
     return message;
   }
 
-  private addMessageToCSV(message: any) {
+  private addMessage(message: any) {
     const newMessage: Message = {
       id: message.id,
       service: message.service,
@@ -65,13 +55,7 @@ class TwilioManager {
       time: message.dateCreated.toISOString().split("T")[1].slice(0, 5),
     };
 
-    const csvStringifier = createObjectCsvStringifier({
-      header: ["id", "service", "receiver", "date", "time", "body"],
-    });
-    const csvString = csvStringifier.stringifyRecords([newMessage]);
-
-    fs.appendFileSync(MSG_FILE_PATH, "\n");
-    fs.appendFileSync(MSG_FILE_PATH, csvString);
+    messages.push(newMessage);
   }
 }
 
