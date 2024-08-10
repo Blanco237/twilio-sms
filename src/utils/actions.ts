@@ -26,6 +26,9 @@ export const verifyLogin = async (code: string) => {
 export const fetchContacts = async (): Promise<Contact[]> => {
   const contacts: Contact[] = [];
 
+  // Log the entire file structure from 'process.cwd()'
+  console.log("File Structure:", fs.readdirSync(process.cwd(), { withFileTypes: true }));
+
   return new Promise((resolve, reject) => {
     fs.createReadStream(CSV_FILE_PATH)
       .pipe(csvParser())
