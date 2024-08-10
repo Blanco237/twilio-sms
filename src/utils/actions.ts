@@ -15,8 +15,8 @@ if(process.env.NODE_ENV === 'development'){
   CSV_FILE_PATH = path.join(process.cwd(), "public", "data", "contacts.csv");
   MSG_FILE_PATH = path.join(process.cwd(), "public", "data", "messages.csv");
 }else{
-  CSV_FILE_PATH = path.join("data", "contacts.csv");
-  MSG_FILE_PATH = path.join("data", "messages.csv");
+  CSV_FILE_PATH = path.join(".","data", "contacts.csv");
+  MSG_FILE_PATH = path.join(".","data", "messages.csv");
 }
 
 export const verifyLogin = async (code: string) => {
